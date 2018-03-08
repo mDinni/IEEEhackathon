@@ -1,0 +1,22 @@
+<div class="signup-container">
+    <div class="alert alert-success" role="alert" ng-if="signupSuccess">
+        You've successfully signed up, now you can
+        <a href="#" class="alert-link">login here</a>
+    </div>
+    <div class="alert alert-danger" role="alert" ng-if="userFound">
+        <strong>Sorry!</strong> User already exist.
+    </div>
+    <div class="alert alert-danger" role="alert" ng-if="emptyError">
+        <strong>All Fields Are Mandatory!!!</strong>
+    </div>
+    <div align="center" style="width: 400px; margin: 20px auto;" class="signup">
+        <h2>Signup Here</h2>
+        <div class="signup-box" style="display:inline-block;">
+            <input ng-model="username" type="text" class="form-control up" placeholder="Username">
+            <input ng-model="password" type="password" class="form-control up" placeholder="Password">
+            <button class="btn btn-primary" ng-click="signupNewUser()">SIGN UP</button>
+            <button class="btn btn-primary" ng-click="backToSignin()">SIGN IN</button>
+        </div>
+    </div>
+
+</div>

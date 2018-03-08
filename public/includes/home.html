@@ -1,0 +1,52 @@
+<div class="row feed">
+    <div class="col-sm-4 signin-box-container" >
+        <div class="signin-box" ng-hide="currentUser">
+            <h2>Login</h2>
+            <br>
+            <div ng-if="emptyError" class="alert alert-danger" role="alert">
+                <strong>All fields are mandatory!</strong>
+            </div>
+            <div class="alert alert-danger" role="alert" ng-if="userNotFound">
+                <strong>Invalid User Credentials</strong>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-user" id="basic-addon1">
+
+                </span>
+                <input class="form-control" type="text" placeholder="Username" ng-model="username">
+            </div><br>
+            <div class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-asterisk" id="basic-addon1"></span>
+                <input class="form-control" type="password" placeholder="Password" ng-model="password">
+            </div><br>
+            <button class="btn submit" type="submit" ng-click="signin()">SIGN IN</button><br><br>
+            <a href="#/signup" >Not a member? Signup</a>
+        </div>
+        <div class="welcome-user" ng-show="currentUser" ng-include="'./includes/welcome.htm'"></div>
+    </div>
+    <div class="col-sm-8 student-logo-container" ng-hide="currentUser">
+        <img id="student-logo" src="../assets/students.png">
+    </div>
+    <div class="col-sm-8 my-feed" ng-show="currentUser">
+        <div id="no-lecture" ng-hide="studentsList">No lecture selected!</div>
+        <div class="class-day-box" ng-show="studentsList">
+            <h3 class="class-heading">{{day}}</h3>
+            <button  class="btn btn-class" type="button">class 1</button>
+        </div>
+        <div class="time-table" >
+            <div class="meow-container" ng-repeat="student in studentsList">
+                <div class="student">
+                    <div class="student-data">{{student.name}}</div>
+                    <div class="student-data">12345</div>
+                    <input type="checkbox">
+                </div>
+                <!-- <h3>
+                    <a href="#" ng-click="removeMeow(meow)" ng-show="currentUser == meow.username"><span class="glyphicon glyphicon-remove-circle delete" aria-hidden="true"></span></a>
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ meow.text }}
+                    <br>
+                    <strong style="font-size: 13px;">{{meow.username}}</strong>
+                </h3> -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html ng-app="DAS">
+
+<head>
+    <meta charset="utf-8">
+    <title>Digitized Attendance System</title>
+    <link rel="shortcut icon" href="./assets/favicon.ico" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="bootstrap/js/angular.min.js"></script>
+    <script src="bootstrap/js/angular-route.js"></script>
+    <script src="bootstrap/js/angular-cookies.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('DAS', ['ngRoute', 'ngCookies']);
+
+        // Route configuration
+        app.config(function($routeProvider, $locationProvider) {
+            $locationProvider.hashPrefix('');
+            $routeProvider
+                .when('/', {
+                    templateUrl: './includes/home.html',
+                    controller: 'HomeController',
+                })
+                .when('/signup', {
+                    templateUrl: './includes/signup.html',
+                    controller: 'SignupController'
+                })
+                .otherwise({
+                    redirectTo: '/',
+                })
+        });
+
+        // Now when user opens the browser, this run method would check the conditions 
+        // if user is already logged in, it would act accordingly
+        app.run(function($cookies, $rootScope) {
+            if ($cookies.get('token') && $cookies.get('currentUser')) {
+                $rootScope.token = $cookies.get('token');
+                $rootScope.currentUser = $cookies.get('currentUser');
+            }
+        });
+
+        app.controller('HomeController', function($rootScope, $scope, $http, $cookies) {
+
+            // signing in and saving the user details
+            $scope.signin = function() {
+                var d = new Date();
+                var weekday = new Array(8);
+                weekday[0] =  "None";
+                weekday[1] = "Monday";
+                weekday[2] = "Tuesday";
+                weekday[3] = "Wednesday";
+                weekday[4] = "Thursday";
+                weekday[5] = "Friday";
+                weekday[6] = "Saturday";
+                weekday[7] = "Saturday";
+
+                $scope.day = weekday[d.getDay()];
+
+                if (!$scope.username || !$scope.password) {
+                    $scope.emptyError = true;
+                    $scope.userNotFound = false;
+                    return;
+                }
+
+                $http.put('/users/signin', {
+                        username: $scope.username,
+                        password: $scope.password
+                    })
+                    .then(function(res) {
+                        var expire = new Date();
+                        expire.setDate(expire.getDate() + 1);
+                        // Setting a cookie
+
+                        // Saving the details in the cookies
+                        $cookies.put('token', res.data.token, {
+                            'expires': expire
+                        });
+                        $cookies.put('currentUser', $scope.username, {
+                            'expires': expire
+                        });
+
+                        // Widening the data scope using the rootScope
+                        // This will make the data available for all the controllers
+                        $rootScope.token = res.data.token;
+                        $rootScope.currentUser = $scope.username;
+                    }, function(err) {
+                        $scope.userNotFound = true;
+                        $scope.emptyError = false;
+                    })
+            }
+
+            $scope.logout = function() {
+                $rootScope.token = null;
+                $rootScope.currentUser = null;
+                $cookies.remove('token');
+                $cookies.remove('currentUser');
+            }
+
+            // Retrieves the data from the server
+            
+            $scope.getStudents = function(lecture, username) {
+                day = new Date().getDay()
+                params = {"day": day, "username": username, "lecture": lecture}
+                $http.get("/routine", {params: params}).then(function(response) {
+                    $scope.studentsList = response.data;
+                    $rootScope.class = response.data.class;
+                });
+            }
+
+
+            
+
+            // Saves the data to the server and calls the get data function thereafter resets the fields
+            $scope.onSubmit = function() {
+                $http.post("/meows", {
+                    'newMeow': $scope.newMeow
+                }, {
+                    headers: {
+                        'authorization': $rootScope.token
+                    }
+                }).then(function(response) {
+                    getMeows();
+                    $scope.newMeow = "";
+                })
+            }
+        })
+
+        // Signup page Controller
+        app.controller('SignupController', function($scope, $http, $location) {
+
+            $scope.backToSignin = function() {
+                $location.path('/');
+            }
+
+            $scope.signupNewUser = function() {
+
+                var newUser = {
+                    username: $scope.username,
+                    password: $scope.password
+                }
+
+                if (!$scope.username || !$scope.password) {
+                    $scope.emptyError = true;
+                    return;
+                }
+
+                $http.post("/users", newUser).then(function(response) {
+
+                    $scope.signupSuccess = true;
+                    $scope.username = '';
+                    $scope.password = '';
+                    // $location.path('/')
+                }, function(error) {
+                    $scope.userFound = error.data.userFound;
+                });
+            }
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <header>
+        <h1 class="page-title"><a href="#/">Digitized Attendance System</a></h1>
+    </header>
+    <div class="container-fluid" >
+        <div ng-view></div>
+    </div>
+    <!-- <div ng-include="'./includes/footer.htm'"></div> -->
+</body>
+
+</html>

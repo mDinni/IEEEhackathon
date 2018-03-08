@@ -1,0 +1,60 @@
+<div class="user">
+    <span id="user-pic" class="user-img">
+        <img src="../assets/trees.jpg" alt="dinesh" height=100% width=100%>
+    </span>
+    <div class="user-nav">
+        <div class="user-container">
+            Hello, <strong>{{ currentUser }}</strong><br>
+        </div>
+        <a ng-click="logout()" href="#">Logout</a>
+    </div>
+</div>
+<hr width="100px" align="left">
+<br>
+<div class="signin-box" ng-show="currentUser">
+        <div><h4>Get Students List</h4><span>({{day}})</span></div>
+
+        <br>
+        <div ng-if="emptyError" class="alert alert-danger" role="alert">
+            <strong>All fields are mandatory!</strong>
+        </div>
+        <div class="alert alert-danger" role="alert" ng-if="userNotFound">
+            <strong>Invalid User Credentials</strong>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon glyphicon glyphicon-list-alt" id="basic-addon1">
+
+            </span>
+            <input class="form-control" type="dropdown" placeholder="Lecture" ng-model="lecture">
+        </div><br>
+        <br>
+        <button class="btn submit" type="submit" ng-click="getStudents(lecture, currentUser)">GET LIST</button><br><br>
+    </div>
+
+
+
+<!-- <div class="fs">
+    <h3>Friends</h3>
+    <div class="fs-container">
+        <div class="f">
+            <div class="f-p">
+                <span class="user-img">
+                    <img src="../assets/dinesh.png" alt="my-friend" height=100% width=100%>
+                </span>
+            </div>
+            <div class="f-info">
+                <p>dinesh</p>
+            </div>
+        </div>
+        <div class="f">
+            <div class="f-p">
+                <span class="user-img">
+                    <img src="../assets/test.png" alt="my-friend" height=100% width=100%>
+                </span>
+            </div>
+            <div class="f-info">
+                <p>test</p>
+            </div>
+        </div>
+    </div>
+</div> -->
