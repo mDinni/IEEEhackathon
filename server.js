@@ -6,14 +6,14 @@ const jwt = require('jwt-simple');
 const bcrypt = require('bcryptjs')
 const app = express();
 
-const JWT_SECRET_KEY = "hydgroupy"
+const JWT_SECRET_KEY = <YOUR_SECRET_KEY>
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
 var dbconn = null;
 
-MongoClient.connect('mongodb://dinesh:dinesh1@ds261078.mlab.com:61078/das', function(err, db) {
+MongoClient.connect('mongodb://<USERNAME>:<PASSWORD>@ds261078.mlab.com:61078/das', function(err, db) {
     if (err) throw err
     console.log("We are connected!");
     dbconn = db;
